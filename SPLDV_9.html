@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathTrip - Peta Interaktif SPLDV Kota Pasuruan by Nuril Maulidia</title>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --secondary: #f59e0b;
+            --accent: #10b981;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --white: #ffffff;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* HEADER & NAVIGATION */
+        header {
+            background: linear-gradient(135deg, var(--dark), #1e293b);
+            color: var(--white);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--secondary);
+            text-decoration: none;
+        }
+
+        .logo i {
+            font-size: 1.6rem;
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: var(--secondary);
+        }
+
+        /* HERO BANNER */
+        .hero {
+            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.9)), 
+                        url('https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1200&auto=format&fit=crop') center/cover no-repeat;
+            color: var(--white);
+            text-align: center;
+            padding: 4rem 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: 2.3rem;
+            font-weight: 800;
+            margin-bottom: 0.8rem;
+            background: linear-gradient(to right, #38bdf8, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.05rem;
+            max-width: 800px;
+            margin: 0 auto 1.5rem auto;
+            color: #cbd5e1;
+        }
+
+        .hero-quote {
+            font-style: italic;
+            background: rgba(255, 255, 255, 0.1);
+            display: inline-block;
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            border-left: 4px solid var(--secondary);
+            font-size: 0.9rem;
+        }
+
+        /* CONTAINER & SECTIONS */
+        .container {
+            max-width: 1000px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .section-box {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-title h2 {
+            font-size: 1.8rem;
+            color: var(--dark);
+            font-weight: 700;
+        }
+
+        .section-title p {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        /* TAMPILAN PETA VISUAL (KOTAK PETA) */
+        .visual-map-container {
+            position: relative;
+            width: 100%;
+            height: 450px;
+            background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 4px solid #94a3b8;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+            margin-bottom: 2.5rem;
+        }
+
+        /* GARIS JALUR PETA (SVG / BACKGROUND PATH) */
+        .map-bg-texture {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(#94a3b8 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.6;
+        }
+
+        .map-route-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* PIN LOKASI DI PETA */
+        .map-pin {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            cursor: pointer;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .map-pin:hover {
+            transform: translate(-50%, -50%) scale(1.15);
+        }
+
+        .pin-icon {
+            width: 42px;
+            height: 42px;
+            background: var(--white);
+            border: 3px solid var(--primary);
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            margin: 0 auto;
+            transition: all 0.3s;
+        }
+
+        .map-pin.active-pin .pin-icon {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--secondary);
+            box-shadow: 0 0 15px var(--secondary);
+        }
+
+        .map-pin.completed .pin-icon {
+            background: var(--accent);
+            color: var(--white);
+            border-color: #065f46;
+        }
+
+        .pin-label {
+            background: rgba(15, 23, 42, 0.85);
+            color: var(--white);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 4px;
+            white-space: nowrap;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* KOORDINAT POSISI PIN DI PETA */
+        #pin-1 { top: 20%; left: 15%; } /* Pelabuhan */
+        #pin-2 { top: 35%; left: 32%; } /* Pasar Karangketug */
+        #pin-3 { top: 55%; left: 25%; } /* Stasiun */
+        #pin-4 { top: 70%; left: 45%; } /* Gedung Harmonie */
+        #pin-5 { top: 50%; left: 60%; } /* Klenteng */
+        #pin-6 { top: 30%; left: 72%; } /* Taman Kota */
+        #pin-7 { top: 60%; left: 82%; } /* Masjid Agung */
+        #pin-8 { top: 80%; left: 75%; } /* Alun-Alun */
+
+        /* KOTAK SOAL AKTIF (DIBAWAH PETA) */
+        .pos-mission-panel {
+            display: none;
+            background: #f8fafc;
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .pos-mission-panel.active-panel {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .mission-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 1.2rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 1rem;
+        }
+
+        .mission-header i {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        .badge-level {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        .badge-lots { background-color: #e0f2fe; color: #0369a1; }
+        .badge-mots { background-color: #fef3c7; color: #b45309; }
+        .badge-hots { background-color: #fee2e2; color: #b91c1c; }
+
+        .question-box {
+            background: var(--white);
+            border-left: 4px solid var(--secondary);
+            padding: 1.2rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border: 1px solid #cbd5e1;
+        }
+
+        .answer-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .answer-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
+        }
+
+        .btn-submit {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            align-self: flex-start;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .feedback-text {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 6px;
+        }
+
+        /* FITUR CONTENT GRID */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .card-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 12px;
+        }
+
+        .card-item h3 {
+            font-size: 1.1rem;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-item p {
+            font-size: 0.9rem;
+            color: #475569;
+        }
+
+        /* AI CHAT SIMULATION BOX */
+        .ai-chat-box {
+            background: #0f172a;
+            color: #fff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+        }
+
+        .ai-chat-box input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+        }
+
+        /* CERTIFICATE PREVIEW */
+        .certificate {
+            border: 6px double var(--secondary);
+            padding: 2rem;
+            text-align: center;
+            background: #fffdf5;
+            border-radius: 10px;
+        }
+
+        .btn-action {
+            background-color: var(--accent);
+            color: var(--white);
+            border: none;
+            padding: 0.7rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+        }
+
+        .btn-action:hover {
+            background-color: #059669;
+        }
+
+        /* FOOTER */
+        footer {
+            background-color: var(--dark);
+            color: var(--white);
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-top: 4rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER & NAVIGASI -->
+    <header>
+        <div class="navbar">
+            <a href="#" class="logo"><i class="fa-solid fa-compass-drafting"></i> MathTrip Pasuruan</a>
+            <ul class="nav-links">
+                <li><a href="#materi"><i class="fa-solid fa-book-open"></i> Materi</a></li>
+                <li><a href="#panduan"><i class="fa-solid fa-chalkboard-user"></i> Panduan Guru</a></li>
+                <li><a href="#peta" class="active"><i class="fa-solid fa-map-location-dot"></i> Peta Misi</a></li>
+                <li><a href="#ai"><i class="fa-solid fa-robot"></i> Asisten AI</a></li>
+                <li><a href="#bukti"><i class="fa-solid fa-medal"></i> Bukti Belajar</a></li>
+                <li><a href="#cetak"><i class="fa-solid fa-print"></i> Cetak Hasil</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- BANNER UTAMA -->
+    <section class="hero">
+        <h1>MathTrip: Peta Wilayah & Misi SPLDV Kota Pasuruan by Miss Nuril</h1>
+        <p>Klik pin penanda lokasi pada peta interaktif di bawah ini untuk membuka tantangan matematika di setiap sudut Kota Pasuruan!</p>
+        <div class="hero-quote">"Matematika adalah peta rahasia untuk menyusuri keindahan Kota Pasuruan."</div>
+    </section>
+
+    <!-- KONTEN UTAMA APLIKASI -->
+    <div class="container">
+
+        <!-- PETA VISUAL INTERAKTIF -->
+        <section id="peta" class="section-box">
+            <div class="section-title">
+                <h2>Peta Perjalanan Wilayah Kota Pasuruan</h2>
+                <p>Silakan klik pin landmark pada peta (mulai dari Pelabuhan Pasuruan):</p>
+            </div>
+
+            <!-- Tampilan Peta Visual -->
+            <div class="visual-map-container">
+                <div class="map-bg-texture"></div>
+                
+                <!-- Garis Jalur Peta SVG -->
+                <svg class="map-route-line">
+                    <path d="M 150 90 Q 230 150 320 160 T 250 250 T 450 315 T 600 225 T 720 135 T 820 270 T 750 360" fill="none" stroke="#0284c7" stroke-width="4" stroke-dasharray="6,6"/>
+                </svg>
+
+                <!-- Pin 1: Pelabuhan Pasuruan -->
+                <div class="map-pin active-pin" id="pin-1" onclick="bukaPos(1)">
+                    <div class="pin-icon"><i class="fa-solid fa-anchor"></i></div>
+                    <div class="pin-label">Pelabuhan</div>
+                </div>
+
+                <!-- Pin 2: Pasar Karangketug -->
+                <div class="map-pin" id="pin-2" onclick="bukaPos(2)">
+                    <div class="pin-icon"><i class="fa-solid fa-basket-shopping"></i></div>
+                    <div class="pin-label">Karangketug</div>
+                </div>
+
+                <!-- Pin 3: Stasiun Pasuruan -->
+                <div class="map-pin" id="pin-3" onclick="bukaPos(3)">
+                    <div class="pin-icon"><i class="fa-solid fa-train"></i></div>
+                    <div class="pin-label">Stasiun</div>
+                </div>
+
+                <!-- Pin 4: Gedung Harmonie -->
+                <div class="map-pin" id="pin-4" onclick="bukaPos(4)">
+                    <div class="pin-icon"><i class="fa-solid fa-landmark"></i></div>
+                    <div class="pin-label">Harmonie</div>
+                </div>
+
+                <!-- Pin 5: Klenteng Tjoe Tik Kiong -->
+                <div class="map-pin" id="pin-5" onclick="bukaPos(5)">
+                    <div class="pin-icon"><i class="fa-solid fa-place-of-worship"></i></div>
+                    <div class="pin-label">Klenteng</div>
+                </div>
+
+                <!-- Pin 6: Taman Kota Pasuruan -->
+                <div class="map-pin" id="pin-6" onclick="bukaPos(6)">
+                    <div class="pin-icon"><i class="fa-solid fa-tree"></i></div>
+                    <div class="pin-label">Taman Kota</div>
+                </div>
+
+                <!-- Pin 7: Masjid Agung Al-Anwar -->
+                <div class="map-pin" id="pin-7" onclick="bukaPos(7)">
+                    <div class="pin-icon"><i class="fa-solid fa-mosque"></i></div>
+                    <div class="pin-label">Masjid Agung</div>
+                </div>
+
+                <!-- Pin 8: Alun-Alun & Payung Madinah -->
+                <div class="map-pin" id="pin-8" onclick="bukaPos(8)">
+                    <div class="pin-icon"><i class="fa-solid fa-umbrella"></i></div>
+                    <div class="pin-label">Alun-Alun</div>
+                </div>
+            </div>
+
+            <!-- KOTAK PANEL SOAL & MENJAWAB (MUNCUL BERDASARKAN PIN YANG DIKLIK) -->
+            
+            <!-- Pos 1 -->
+            <div class="pos-mission-panel active-panel" id="panel-1">
+                <div class="mission-header">
+                    <i class="fa-solid fa-anchor"></i>
+                    <div>
+                        <h3>Pelabuhan Pasuruan</h3>
+                        <span class="badge-level badge-lots">Tingkat LOTS (C2) - Konsep Dasar</span>
+                    </div>
+                </div>
+                <div class="question-box">
+                    <h4><i class="fa-solid fa-circle-question text-primary"></i> Pertanyaan Misi:</h4>
+                    <p>Seorang nelayan menyewa dua jenis perahu: perahu kecil dimisalkan variabel x dan perahu besar dimisalkan variabel y. Tuliskan bentuk persamaan linear lengkap dari kalimat berikut: <em>"3 perahu kecil dan 2 perahu besar memiliki kapasitas total 24 orang"</em>.</p>
+                    <div class="answer-group">
+                        <input type="text" class="answer-input" placeholder="Format jawaban: 3x + 2y = 24">
+                        <button class="btn-submit" onclick="kirimDanLanjut(1, 2)">Kirim Jawaban & Lanjut ke Pasar Karangketug</button>
+                        <div class="feedback-text"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pos 2 -->
+            <div class="pos-mission-panel" id="panel-2">
+                <div class="mission-header">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                    <div>
+                        <h3>Pasar Karangketug</h3>
+                        <span class="badge-level badge-lots">Tingkat LOTS (C3) - Model Matematika</span>
+                    </div>
+                </div>
+                <div class="question-box">
+                    <h4><i class="fa-solid fa-circle-question text-primary"></i> Pertanyaan Misi:</h4>
+                    <p>Ibu membeli 2 porsi Kupang Kraton (x) dan 3 bungkus Deblo (y) seharga Rp34.000,00. Ayah membeli 1 porsi Kupang Kraton dan 2 bungkus Deblo seharga Rp20.000,00. Tuliskan <strong>kedua persamaan SPLDV</strong> tersebut!</p>
+                    <div class="answer-group">
+                        <input type="text" class="answer-input" placeholder="Contoh: 2x+3y=34000 dan x+2y=20000">
+                        <button class="btn-submit" onclick="kirimDanLanjut(2, 3)">Kirim Jawaban & Lanjut ke Stasiun Pasuruan</button>
+                        <div class="feedback-text"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pos 3 -->
+            <div class="pos-mission-panel" id="panel-3">
+                <div class="mission-header">
+                    <i class="fa-solid fa-train"></i>
+                    <div>
+                        <h3>Stasiun Pasuruan</h3>
+                        <span class="badge-level badge-mots">Tingkat MOTS (C3) - Metode Grafik</span>
+                    </div>
+                </div>
+                <div class="question-box">
+                    <h4><i class="fa-solid fa-circle-question text-primary"></i> Pertanyaan Misi:</h4>
+                    <p>Rute Jalur Kereta A dimisalkan persamaan x + y = 6 dan Rute Jalur Kereta B dimisalkan persamaan x - y = 2. Berapakah koordinat titik potong (x, y) pertemuan kedua rute tersebut?</p>
+                    <div class="answer-group">
+                        <input type="text" class="answer-input" placeholder="Tuliskan koordinat dalam kurung, misal: (4,2)">
+                        <button class="btn-submit" onclick="kirimDanLanjut(3, 4)">Kirim Jawaban & Lanjut ke Gedung Harmonie</button>
+                        <div class="feedback-text"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pos 4 -->
+            <div class="pos-mission-panel" id="panel-4">
+                <div class="mission-header">
+                    <i class="fa-solid fa-landmark"></i>
+                    <div>
+                        <h3>Gedung Harmonie</h3>
+                        <span class="badge-level badge-mots">Tingkat MOTS (C3) - Metode Substitusi</span>
+                    </div>
+                </div>
+                <div class="question-box">
+                    <h4><i class="fa-solid fa-circle-question text-primary"></i> Pertanyaan Misi:</h4>
+                    <p>Harga tiket dewasa ($x$) dan 2 anak ($y$) adalah Rp15.000,00. Diketahui tiket dewasa bernilai Rp3.000,00 lebih mahal dari tiket anak ($x = y + 3000$). Berapakah harga 1 tiket anak ($y$)?</p>
+                    <div class="answer-group">
+                        <input type="text" class="answer-input" placeholder="Tuliskan nilai y (misal: 4000)">
+                        <button class="btn-submit" onclick="kirimDanLanjut(4, 5)">Kirim Jawaban & Lanjut ke Klenteng</button>
+                        <div class="feedback-text"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pos 5 -->
+            <div class="pos-mission-panel" id="panel-5">
+                <div class="mission-header">
+                    <i class="fa-solid fa-place-of-worship"></i>
+                    <div>
+                        <h3>Klenteng Tjoe Tik Kiong</h3>
+                        <span class="badge-level badge-mots">Tingkat MOTS (C3) - Metode Eliminasi</span>
+                    </div>
+                </div>
+                <div class="question-box">
+                    <h4><i class="fa-solid fa-circle-question text-primary"></i> Pertanyaan Misi:</h4>
+                    <p>Diberikan sistem persamaan pembelian lilin: 3x + 2y = 27000 dan 2x + 5y = 29000. Berapakah nilai dari variabel x?</p>
+                    <div class="answer-group">
+                        <input type="text" class="answer-input" placeholder="Tuliskan nilai x...">
+                        <button class="btn-submit" onclick="kirimDanLanjut(5, 6)">Kirim Jawaban & Lanjut ke Taman Kota</button>
+                        <div class="feedback-text"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pos 6 -->
+            <div class="pos-mission-panel" id="panel-6">
+                <div class="mission-header">
+                    <i class="fa-solid fa-tree"></i>
+                    <div>
+                        <h3>Taman Kota Pasuruan</h3>
+                        <span class="badge-level badge-mots">Tingkat MOTS (C4) - Metode Gabungan</span>
+                    </div>
+                </div>
+                <div class="question-box">
+                    <h4><i class="fa-solid fa-circle-question text-primary"></i> Pertanyaan Misi:</h4>
+                    <p>Di parkiran terdapat total 40 kendaraan (sepeda motor x dan mobil y) dengan jumlah roda keseluruhan 100 buah. Jika tarif parkir motor Rp2.000 dan mobil Rp5.000, hitunglah <strong>total pendapatan parkir</strong> seluruhnya!</p>
+                    <div class="answer-group">
+                        <input type="text" class="answer-input" placeholder="Tuliskan total nominal rupiah...">
+                        <button class="btn-submit" onclick="kirimDanLanjut(6, 7)">Kirim Jawaban & Lanjut ke Masjid Agung</button>
+                        <div class="feedback-text"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pos 7 -->
+            <div class="pos-mission-panel" id="panel-7">
+                <div class="mission-header">
+                    <i class="fa-solid fa-mosque"></i>
+                    <div>
+                        <h3>Masjid Agung Al-Anwar</h3>
+                        <span class="badge-level badge-hots">Tingkat HOTS (C5) - Evaluasi Masalah</span>
+                    </div>
+                </div>
+                <div class="question-box">
+                    <h4><i class="fa-solid fa-circle-question text-primary"></i> Pertanyaan Misi:</h4>
+                    <p>Paket A (3 kg beras & 2 kg gula) = Rp70.000. Paket B (5 kg beras & 3 kg gula) = Rp111.000. Apakah benar harga 1 kg gula lebih mahal daripada 1 kg beras? (Ketik: <strong>Ya</strong> atau <strong>Tidak</strong> beserta alasannya singkat).</p>
+                    <div class="answer-group">
+                        <input type="text" class="answer-input" placeholder="Tuliskan analisis kesimpulan...">
+                        <button class="btn-submit" onclick="kirimDanLanjut(7, 8)">Kirim Jawaban & Lanjut ke Alun-Alun</button>
+                        <div class="feedback-text"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pos 8 -->
+            <div class="pos-mission-panel" id="panel-8">
+                <div class="mission-header">
+                    <i class="fa-solid fa-umbrella" style="color: var(--accent);"></i>
+                    <div>
+                        <h3>Alun-Alun & Payung Madinah</h3>
+                        <span class="badge-level badge-hots" style="background-color: #d1fae5; color: #065f46;">Tingkat HOTS (C6) - Final Boss</span>
+                    </div>
+                </div>
+                <div class="question-box">
+                    <h4><i class="fa-solid fa-crown text-secondary"></i> Tantangan Final Boss:</h4>
+                    <p>Paket Tur X (2 tiket bus & 3 voucher kuliner) = Rp210.000. Paket Tur Y (4 tiket bus & 1 voucher) = Rp270.000. Jika sekolah ingin memberangkatkan 30 siswa (masing-masing 1 tiket bus & 1 voucher), berapa total anggaran minimum yang harus disiapkan?</p>
+                    <div class="answer-group">
+                        <input type="text" class="answer-input" placeholder="Tuliskan total anggaran penjelajahan...">
+                        <button class="btn-submit" onclick="selesaiFinal(8)" style="background-color: var(--accent);">Kirim Jawaban Final & Selesaikan Misi!</button>
+                        <div class="feedback-text"></div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 2. MATERI PEMBELAJARAN SPLDV -->
+        <section id="materi" class="section-box">
+            <div class="section-title">
+                <h2>Materi Pembelajaran SPLDV</h2>
+                <p>Ringkasan konsep cepat panduan penjelajahan peta</p>
+            </div>
+            <div class="content-grid">
+                <div class="card-item">
+                    <h3><i class="fa-solid fa-circle-question"></i> Apa itu SPLDV?</h3>
+                    <p>Sistem Persamaan Linear Dua Variabel adalah dua persamaan linear yang memiliki dua variabel berpangkat satu, bentuk umum: ax + by = c dan dx + ey = f.</p>
+                </div>
+                <div class="card-item">
+                    <h3><i class="fa-solid fa-pen-ruler"></i> Metode Penyelesaian</h3>
+                    <p>Terdiri dari 4 cara: Grafik (titik potong garis), Substitusi (mengganti nilai variabel), Eliminasi (menghilangkan variabel), dan Metode Gabungan.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. PANDUAN GURU -->
+        <section id="panduan" class="section-box">
+            <div class="section-title">
+                <h2>Panduan Guru / Fasilitator</h2>
+                <p>Petunjuk implementasi web dalam pembelajaran di kelas</p>
+            </div>
+            <div class="content-grid">
+                <div class="card-item">
+                    <h3><i class="fa-solid fa-bullseye"></i> Tujuan Pembelajaran</h3>
+                    <p>Siswa mampu menyusun model matematika dari masalah kontekstual lokal Kota Pasuruan serta menyelesaikan SPLDV secara mandiri dari tingkat LOTS hingga HOTS.</p>
+                </div>
+                <div class="card-item">
+                    <h3><i class="fa-solid fa-clock"></i> Skenario Pembelajaran</h3>
+                    <p>Gunakan peta wilayah interaktif ini agar siswa dapat mengeksplorasi posisi geografis landmark Kota Pasuruan dari pos pertama hingga pos terakhir.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. PENDAMPING AI -->
+        <section id="ai" class="section-box">
+            <div class="section-title">
+                <h2>Pendamping Belajar AI</h2>
+                <p>Butuh bantuan atau petunjuk hint saat terjebak di pos tertentu? Tanyakan di sini!</p>
+            </div>
+            <div class="ai-chat-box">
+                <p><i class="fa-solid fa-robot text-secondary"></i> **Asisten MathTrip:** Halo Penjelajah! Pos mana di peta wilayah yang sedang kamu hadapi? Ketik pertanyaan atau kendalamu terkait SPLDV.</p>
+                <input type="text" placeholder="Ketik pertanyaanmu di sini..." disabled>
+            </div>
+        </section>
+
+        <!-- 5. BUKTI BELAJAR -->
+        <section id="bukti" class="section-box">
+            <div class="section-title">
+                <h2>Bukti Belajar & Skor Pos</h2>
+                <p>Rekapitulasi pencapaian pos yang telah diselesaikan</p>
+            </div>
+            <div class="content-grid">
+                <div class="card-item" style="text-align: center;">
+                    <i class="fa-solid fa-trophy" style="font-size: 2.5rem; color: #f59e0b; margin-bottom: 0.5rem;"></i>
+                    <h3>Status: Peta Wilayah Aktif</h3>
+                    <p>Klik pin penanda lokasi pada peta untuk menyelesaikan setiap misi pos.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. CETAK HASIL BELAJAR -->
+        <section id="cetak" class="section-box">
+            <div class="section-title">
+                <h2>Cetak Hasil Belajar</h2>
+                <p>Unduh sertifikat kelulusan penjelajahan setelah menaklukkan Alun-Alun Pasuruan</p>
+            </div>
+            <div class="certificate">
+                <h3 style="color: var(--dark); font-size: 1.4rem;">Sertifikat Penjelajah SPLDV</h3>
+                <p style="margin: 10px 0; color: #64748b;">Diberikan kepada Penjelajah Cerdas atas keberhasilannya menyelesaikan Peta Wilayah MathTrip Kota Pasuruan dari Pos 1 hingga Pos 8.</p>
+                <button class="btn-action" onclick="window.print()"><i class="fa-solid fa-print"></i> Cetak / Unduh Sertifikat</button>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2026 MathTrip-KotaPasuruan. Media Pembelajaran Interaktif Matematika Berbasis Budaya & Ruang Kota.</p>
+    </footer>
+
+    <!-- SCRIPT INTERAKTIF PETA VISUAL -->
+    <script>
+        function bukaPos(posNum) {
+            // Sembunyikan semua panel soal
+            for (let i = 1; i <= 8; i++) {
+                const panel = document.getElementById(`panel-${i}`);
+                if (panel) panel.classList.remove('active-panel');
+
+                const pin = document.getElementById(`pin-${i}`);
+                if (pin) pin.classList.remove('active-pin');
+            }
+
+            // Tampilkan panel pos yang dipilih
+            const targetPanel = document.getElementById(`panel-${posNum}`);
+            if (targetPanel) targetPanel.classList.add('active-panel');
+
+            // Tandai pin aktif
+            const targetPin = document.getElementById(`pin-${posNum}`);
+            if (targetPin) targetPin.classList.add('active-pin');
+
+            // Scroll otomatis ke panel soal
+            targetPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function kirimDanLanjut(currentPos, nextPos) {
+            const panel = document.getElementById(`panel-${currentPos}`);
+            const inputField = panel.querySelector('.answer-input');
+            const feedback = panel.querySelector('.feedback-text');
+            const submitBtn = panel.querySelector('.btn-submit');
+
+            if (inputField.value.trim() === "") {
+                feedback.style.color = "#ef4444";
+                feedback.textContent = "⚠️ Harap masukkan jawaban terlebih dahulu!";
+            } else {
+                feedback.style.color = "#10b981";
+                feedback.textContent = "✅ Jawaban berhasil dicatat!";
+                inputField.disabled = true;
+                submitBtn.disabled = true;
+                submitBtn.style.backgroundColor = "#94a3b8";
+
+                // Tandai pin peta sebagai selesai
+                const pinLoc = document.getElementById(`pin-${currentPos}`);
+                pinLoc.classList.add('completed');
+
+                // Otomatis buka pos berikutnya setelah sejenak
+                setTimeout(() => {
+                    bukaPos(nextPos);
+                }, 1000);
+            }
+        }
+
+        function selesaiFinal(posNum) {
+            const panel = document.getElementById(`panel-${posNum}`);
+            const inputField = panel.querySelector('.answer-input');
+            const feedback = panel.querySelector('.feedback-text');
+            const submitBtn = panel.querySelector('.btn-submit');
+
+            if (inputField.value.trim() === "") {
+                feedback.style.color = "#ef4444";
+                feedback.textContent = "⚠️ Harap masukkan jawaban akhir terlebih dahulu!";
+            } else {
+                feedback.style.color = "#10b981";
+                feedback.textContent = "🏆 LUAR BIASA! Seluruh Wilayah Kota Pasuruan telah ditaklukkan!";
+                inputField.disabled = true;
+                submitBtn.disabled = true;
+                submitBtn.style.backgroundColor = "#94a3b8";
+
+                const pinLoc = document.getElementById(`pin-${posNum}`);
+                pinLoc.classList.add('completed');
+
+                alert("Selamat! Kamu telah berhasil menaklukkan seluruh Peta Wilayah MathTrip Kota Pasuruan dan menjadi Master SPLDV!");
+            }
+        }
+    </script>
+
+</body>
+</html>
